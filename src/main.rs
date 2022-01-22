@@ -1,16 +1,20 @@
-use axum::{routing::get, response::Html, Router};
 use askama::Template;
+use axum::{response::Html, routing::get, Router};
+
+struct Post {
+    subject: String,
+    text: String,
+}
 
 #[derive(Template)]
-#[template(path = "hello.html")]
-struct HewwoTempl {
-    msg: String,
+#[template(path = "board.html")]
+struct BoardTempl {
+    posts: Vec<Post>,
 }
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new()
-        .route("/", get(handler));
+    let app = Router::new().route("/", get(handler));
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
@@ -19,6 +23,12 @@ async fn main() {
 }
 
 async fn handler() -> Html<String> {
-    let hewwo = HewwoTempl { msg: "uwu".to_owned() };
+    let hewwo = BoardTempl {
+        posts: vec![Post {
+            subject: "/sleepgen/".to_string(),
+            text: "uwu".to_string(),
+        }],
+    };
+
     Html(hewwo.render().unwrap())
 }
