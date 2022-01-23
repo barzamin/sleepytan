@@ -1,34 +1,29 @@
-use askama::Template;
-use axum::{response::Html, routing::get, Router};
+use axum::{routing::get, Router, AddExtensionLayer};
+use sqlx::sqlite::SqlitePool;
+use color_eyre::eyre::Result;
+use tower::ServiceBuilder;
+use std::env;
 
-struct Post {
-    subject: String,
-    text: String,
-}
-
-#[derive(Template)]
-#[template(path = "board.html")]
-struct BoardTempl {
-    posts: Vec<Post>,
-}
+mod handlers;
+mod data;
 
 #[tokio::main]
-async fn main() {
-    let app = Router::new().route("/", get(handler));
+async fn main() -> Result<()> {
+    tracing_subscriber::fmt::init();
+
+    let pool = SqlitePool::connect(&env::var("DATABASE_URL")?).await?;
+
+    let app = Router::new()
+        .route("/", get(handlers::board::board))
+        .layer(
+            ServiceBuilder::new()
+                .layer(AddExtensionLayer::new(pool))
+        );
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
 
-async fn handler() -> Html<String> {
-    let hewwo = BoardTempl {
-        posts: vec![Post {
-            subject: "/sleepgen/".to_string(),
-            text: "uwu".to_string(),
-        }],
-    };
-
-    Html(hewwo.render().unwrap())
+    Ok(())
 }
