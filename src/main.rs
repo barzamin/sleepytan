@@ -1,11 +1,13 @@
-use axum::{routing::get, Router, AddExtensionLayer};
-use sqlx::sqlite::SqlitePool;
+use axum::{routing::get, AddExtensionLayer, Router};
 use color_eyre::eyre::Result;
-use tower::ServiceBuilder;
+use sqlx::sqlite::SqlitePool;
 use std::env;
+use tower::ServiceBuilder;
 
-mod handlers;
 mod data;
+mod db;
+mod err;
+mod handlers;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -14,11 +16,9 @@ async fn main() -> Result<()> {
     let pool = SqlitePool::connect(&env::var("DATABASE_URL")?).await?;
 
     let app = Router::new()
-        .route("/", get(handlers::board::board))
-        .layer(
-            ServiceBuilder::new()
-                .layer(AddExtensionLayer::new(pool))
-        );
+        .route("/:code", get(handlers::board::get))
+        .route("/_/:id", get(handlers::handle::get))
+        .layer(ServiceBuilder::new().layer(AddExtensionLayer::new(pool)));
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
