@@ -6,7 +6,7 @@ CREATE TABLE accessor (
 CREATE TABLE handle (
     id integer primary key,
     accessor integer references accessor(id) not null,
-    name varchar
+    `name` varchar
 );
 
 CREATE TABLE board (
@@ -18,6 +18,6 @@ CREATE TABLE post (
     id integer PRIMARY key,
     handle integer references handle(id) not null,
     board integer references board(id) not null,
-    subject text,
+    `subject` text,
     body text
 );
