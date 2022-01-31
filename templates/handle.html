@@ -1,2 +1,6 @@
-<h1>*{{handle}}</h1>
+{% if let Some(handle) = handle %}
+    <h1>*{{handle.name}}</h1>
+{% else %}
+    <h1>***NO DATA FOUND.***</h1>
+{% endif %}
 

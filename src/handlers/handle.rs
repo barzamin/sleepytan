@@ -1,21 +1,22 @@
-use crate::{data::Post, err::AppError};
+use crate::{data::Post, db::Handle, err::AppError};
 use askama::Template;
 use axum::{
     extract::{Extension, Path},
     response::Html,
 };
-use sqlx::SqlitePool;
+
+use crate::db;
 
 #[derive(Template)]
 #[template(path = "handle.html")]
 struct HandleTempl {
-    handle: String,
+    handle: Option<Handle>,
     posts: Vec<Post>,
 }
 
 pub async fn get(
     Path(id): Path<i64>,
-    Extension(pool): Extension<SqlitePool>,
+    Extension(pool): Extension<db::Pool>,
 ) -> Result<Html<String>, AppError> {
     let handle = crate::db::get_handle(&pool, id).await.map_err(|err| {
         tracing::error!(%err, "failed to get handle");
@@ -25,7 +26,7 @@ pub async fn get(
     tracing::debug!(?handle, "fetched handle");
 
     let templ = HandleTempl {
-        handle: "3moon".to_string(),
+        handle,
         posts: vec![],
     };
 
