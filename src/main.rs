@@ -6,7 +6,6 @@ use axum::{
     AddExtensionLayer, Router,
 };
 use color_eyre::eyre::Result;
-use err::AppError;
 use sqlx::sqlite::SqlitePool;
 use std::env;
 use tower::ServiceBuilder;
@@ -18,7 +17,7 @@ mod err;
 mod handlers;
 mod session;
 
-use session::UserCtx;
+use session::AccessorCtx;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -49,6 +48,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-async fn index(uctx: UserCtx) -> Html<String> {
+async fn index(uctx: AccessorCtx) -> Html<String> {
     Html(format!("wawawa {:?}", uctx))
 }

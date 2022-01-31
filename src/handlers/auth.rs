@@ -3,7 +3,7 @@ use askama::Template;
 use async_session::{MemoryStore, Session, SessionStore};
 use axum::{
     extract::{Extension, Form},
-    http::Uri,
+    http::{StatusCode, Uri},
     response::{Html, IntoResponse, Redirect},
     routing::get,
     Router,
@@ -57,6 +57,8 @@ async fn get_login() -> Html<String> {
 async fn post_login(
     form: Form<LoginForm>,
     Extension(pool): Extension<db::Pool>,
+    Extension(sess_store): Extension<MemoryStore>,
+    cookies: Cookies,
 ) -> Result<impl IntoResponse, AppError> {
     let form = form.0;
 
@@ -66,8 +68,21 @@ async fn post_login(
     let verif = Argon2::default().verify_password(form.password.as_bytes(), &hash);
 
     debug!(?verif, "verification of passhash");
+    if let Ok(_) = verif {
+        // insert session
+        debug!("good login; inserting session and redirecting to /");
 
-    Ok(())
+        let mut sess = Session::new();
+        sess.insert("aid", accessor.id)
+            .map_err(|_| eyre!("can't insert aid to session"))?;
+        let cookieval = sess_store.store_session(sess).await?.unwrap();
+        cookies.add(crate::session::new_cookie(cookieval));
+
+        Ok(Redirect::to(Uri::from_static("/")).into_response())
+    } else {
+        let templ = LoginTempl {};
+        Ok((StatusCode::UNAUTHORIZED, Html(templ.render().unwrap())).into_response())
+    }
 }
 
 async fn post_signup(
@@ -85,10 +100,10 @@ async fn post_signup(
     info!(id, "registered new accessor");
 
     let mut sess = Session::new();
-    sess.insert("uid", id)
-        .map_err(|_| eyre!("can't insert uid to session"))?;
+    sess.insert("aid", id)
+        .map_err(|_| eyre!("can't insert aid to session"))?;
     let cookieval = sess_store.store_session(sess).await?.unwrap();
-    cookies.add(Cookie::new(SESSION_COOKIE_NAME, cookieval));
+    cookies.add(crate::session::new_cookie(cookieval));
 
     Ok(Redirect::to(Uri::from_static("/")))
 }
