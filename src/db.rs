@@ -1,7 +1,9 @@
 use argon2::PasswordHasher;
-use color_eyre::eyre::Result;
 use password_hash::PasswordHash;
 use sqlx::SqlitePool;
+
+pub type Pool = SqlitePool;
+type Result<T> = std::result::Result<T, sqlx::Error>;
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct Handle {
@@ -10,10 +12,16 @@ pub struct Handle {
     pub name: String,
 }
 
+#[derive(Debug, sqlx::FromRow)]
+pub struct Accessor {
+    pub id: i64,
+    pub passhash: String,
+}
+
 pub async fn insert_accessor<'a>(
     pool: &'a SqlitePool,
     passhash: &'a PasswordHash<'a>,
-) -> Result<i64, sqlx::Error> {
+) -> Result<i64> {
     Ok(sqlx::query("INSERT INTO accessor (passhash) VALUES (?)")
         .bind(passhash.to_string())
         .execute(pool)
@@ -21,9 +29,16 @@ pub async fn insert_accessor<'a>(
         .last_insert_rowid())
 }
 
-pub async fn get_handle(pool: &SqlitePool, id: i64) -> Result<Option<Handle>, sqlx::Error> {
+pub async fn get_handle(pool: &SqlitePool, id: i64) -> Result<Option<Handle>> {
     sqlx::query_as("SELECT * FROM handle WHERE id = ?")
         .bind(id)
+        .fetch_optional(pool)
+        .await
+}
+
+pub async fn get_accessor(pool: &SqlitePool, aid: i64) -> Result<Option<Accessor>> {
+    sqlx::query_as("SELECT * FROM accessor WHERE id = ?")
+        .bind(aid)
         .fetch_optional(pool)
         .await
 }
