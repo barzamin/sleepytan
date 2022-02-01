@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <h1>sleepytan</h1>
+    <div class="board-list">
+    {% for board in boards %}
+        <div class="board"><a href="/{{board.code}}">/{{board.code}}/</a> - {{board.desc}}</div>
+    {% endfor %}
+    </div>
+{% endblock main %}

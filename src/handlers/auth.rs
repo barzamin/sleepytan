@@ -62,7 +62,7 @@ async fn post_login(
 ) -> Result<impl IntoResponse, AppError> {
     let form = form.0;
 
-    let accessor = crate::db::get_accessor(&pool, form.aid).await?.unwrap();
+    let accessor = crate::db::get_accessor(&pool, form.aid).await?.unwrap(); // FIXME(3moon)!!
     let hash = PasswordHash::new(&accessor.passhash)?;
 
     let verif = Argon2::default().verify_password(form.password.as_bytes(), &hash);

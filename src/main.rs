@@ -29,8 +29,8 @@ async fn main() -> Result<()> {
     let pool = SqlitePool::connect(&env::var("DATABASE_URL")?).await?;
 
     let app = Router::new()
-        .route("/", get(index))
-        .route("/:code", get(handlers::board::get))
+        .route("/", get(handlers::index::get))
+        .route("/:code/", get(handlers::board::get))
         .route("/_/:id", get(handlers::handle::get))
         .nest("/auth", handlers::auth::router())
         .layer(
@@ -46,8 +46,4 @@ async fn main() -> Result<()> {
         .unwrap();
 
     Ok(())
-}
-
-async fn index(uctx: AccessorCtx) -> Html<String> {
-    Html(format!("wawawa {:?}", uctx))
 }
