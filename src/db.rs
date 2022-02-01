@@ -2,6 +2,8 @@ use argon2::PasswordHasher;
 use password_hash::PasswordHash;
 use sqlx::SqlitePool;
 
+use crate::data::Board;
+
 pub type Pool = SqlitePool;
 type Result<T> = std::result::Result<T, sqlx::Error>;
 
@@ -40,5 +42,11 @@ pub async fn get_accessor(pool: &SqlitePool, aid: i64) -> Result<Option<Accessor
     sqlx::query_as("SELECT * FROM accessor WHERE id = ?")
         .bind(aid)
         .fetch_optional(pool)
+        .await
+}
+
+pub async fn get_boards(pool: &SqlitePool) -> Result<Vec<Board>> {
+    sqlx::query_as("SELECT * FROM board")
+        .fetch_all(pool)
         .await
 }
