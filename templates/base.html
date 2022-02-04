@@ -25,7 +25,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}sleeptan{% endblock %}</title>
-    {% block head %}{% endblock %}
+    {% block head %}
+    <link rel="stylesheet" href="/static/style.css">
+    {% endblock %}
 </head>
 <body>
 {% block content %}

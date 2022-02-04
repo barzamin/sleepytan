@@ -18,3 +18,44 @@
   ';;;;'';  ;;  '; `;;'  `;;' ';  ;;
        _;        `-'          ;    `.
 */
+
+/* -- fixups for dumb browser behavior -- */
+body { margin: 0; }
+main { display: block; }
+details { display: block; }
+summary { display: list-item; }
+[hidden] { display: none; } /* IE10 🤔 */
+
+/*-- resources --*/
+/* @font-face {
+    font-family: "Iwata Kaisho";
+    src: url("/static/IwataKaisho.woff");
+} */
+
+@font-face {
+    font-family: "MingLiU";
+    src: url("/static/MingLiU.woff2");
+}
+
+html {
+    font-family: "MingLiU";
+    /* font-family: "Iwata Kaisho";
+    font-weight: 100;*/
+    font-size: 1.1rem;
+    letter-spacing: .05rem;
+}
+
+/* -- general elements --*/
+h1 {
+    letter-spacing: 1rem;
+}
+
+main {
+    margin: 0 5rem;
+}
+
+/* -- index page -- */
+.board-list .board {
+    background-color: antiquewhite;
+    margin-bottom: 0.2em;
+}
