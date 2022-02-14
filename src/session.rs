@@ -61,10 +61,10 @@ where
             .map_err(|err| AppError::Session(err).into_response())?
             .ok_or_else(redirect)?;
 
-        let id: Option<i64> = session.get("aid");
+        let id: Option<i64> = session.get("id");
         let id = id.ok_or_else(redirect)?;
 
-        debug!(%id, "loaded session with accessor id");
+        debug!(%id, "loaded session with handle id");
 
         Ok(AccessorCtx { id })
     }

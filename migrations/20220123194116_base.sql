@@ -1,11 +1,6 @@
-CREATE TABLE accessor (
-    id integer primary key,
-    passhash varchar not null
-);
-
 CREATE TABLE handle (
     id integer primary key,
-    accessor integer references accessor(id) not null,
+    passhash varchar not null,
     `name` varchar
 );
 

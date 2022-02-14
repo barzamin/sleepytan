@@ -10,22 +10,18 @@ type Result<T> = std::result::Result<T, sqlx::Error>;
 #[derive(Debug, sqlx::FromRow)]
 pub struct Handle {
     pub id: i64,
-    pub accessor: i64,
     pub name: String,
-}
-
-#[derive(Debug, sqlx::FromRow)]
-pub struct Accessor {
-    pub id: i64,
     pub passhash: String,
 }
 
-pub async fn insert_accessor<'a>(
+pub async fn insert_handle<'a>(
     pool: &'a SqlitePool,
+    name: impl AsRef<str>,
     passhash: &'a PasswordHash<'a>,
 ) -> Result<i64> {
-    Ok(sqlx::query("INSERT INTO accessor (passhash) VALUES (?)")
+    Ok(sqlx::query("INSERT INTO handle (passhash, `name`) VALUES (?, ?)")
         .bind(passhash.to_string())
+        .bind(name.as_ref())
         .execute(pool)
         .await?
         .last_insert_rowid())
@@ -34,13 +30,6 @@ pub async fn insert_accessor<'a>(
 pub async fn get_handle(pool: &SqlitePool, id: i64) -> Result<Option<Handle>> {
     sqlx::query_as("SELECT * FROM handle WHERE id = ?")
         .bind(id)
-        .fetch_optional(pool)
-        .await
-}
-
-pub async fn get_accessor(pool: &SqlitePool, aid: i64) -> Result<Option<Accessor>> {
-    sqlx::query_as("SELECT * FROM accessor WHERE id = ?")
-        .bind(aid)
         .fetch_optional(pool)
         .await
 }

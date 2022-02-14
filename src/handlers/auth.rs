@@ -39,12 +39,13 @@ async fn get_signup() -> Html<String> {
 
 #[derive(Deserialize)]
 struct SignupForm {
+    name: String,
     password: String,
 }
 
 #[derive(Deserialize)]
 struct LoginForm {
-    aid: i64,
+    id: i64,
     password: String,
 }
 
@@ -62,8 +63,8 @@ async fn post_login(
 ) -> Result<impl IntoResponse, AppError> {
     let form = form.0;
 
-    let accessor = crate::db::get_accessor(&pool, form.aid).await?.unwrap(); // FIXME(3moon)!!
-    let hash = PasswordHash::new(&accessor.passhash)?;
+    let handle = crate::db::get_handle(&pool, form.id).await?.unwrap(); // FIXME(3moon)!!
+    let hash = PasswordHash::new(&handle.passhash)?;
 
     let verif = Argon2::default().verify_password(form.password.as_bytes(), &hash);
 
@@ -73,8 +74,8 @@ async fn post_login(
         debug!("good login; inserting session and redirecting to /");
 
         let mut sess = Session::new();
-        sess.insert("aid", accessor.id)
-            .map_err(|_| eyre!("can't insert aid to session"))?;
+        sess.insert("id", handle.id)
+            .map_err(|_| eyre!("can't insert id to session"))?;
         let cookieval = sess_store.store_session(sess).await?.unwrap();
         cookies.add(crate::session::new_cookie(cookieval));
 
@@ -96,12 +97,12 @@ async fn post_signup(
     let salt = SaltString::generate(&mut OsRng);
     let pwhash = Argon2::default().hash_password(formdata.password.as_bytes(), &salt)?;
 
-    let id = crate::db::insert_accessor(&pool, &pwhash).await?;
-    info!(id, "registered new accessor");
+    let id = crate::db::insert_handle(&pool, &formdata.name, &pwhash).await?;
+    info!(id, "registered new handle");
 
     let mut sess = Session::new();
-    sess.insert("aid", id)
-        .map_err(|_| eyre!("can't insert aid to session"))?;
+    sess.insert("id", id)
+        .map_err(|_| eyre!("can't insert id to session"))?;
     let cookieval = sess_store.store_session(sess).await?.unwrap();
     cookies.add(crate::session::new_cookie(cookieval));
 
