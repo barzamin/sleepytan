@@ -45,7 +45,7 @@ struct SignupForm {
 
 #[derive(Deserialize)]
 struct LoginForm {
-    id: i64,
+    id: Uuid,
     password: String,
 }
 
@@ -98,7 +98,7 @@ async fn post_signup(
     let pwhash = Argon2::default().hash_password(formdata.password.as_bytes(), &salt)?;
 
     let id = crate::db::insert_handle(&pool, &formdata.name, &pwhash).await?;
-    info!(id, "registered new handle");
+    info!(%id, "registered new handle");
 
     let mut sess = Session::new();
     sess.insert("id", id)

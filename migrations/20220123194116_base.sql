@@ -1,5 +1,5 @@
 CREATE TABLE handle (
-    id integer primary key,
+    id blob primary key,
     passhash varchar not null,
     `name` varchar
 );
@@ -10,7 +10,7 @@ CREATE TABLE board (
 );
 
 CREATE TABLE post (
-    id integer PRIMARY key,
+    id integer primary key,
     handle integer references handle(id) not null,
     board integer references board(id) not null,
     `subject` text,

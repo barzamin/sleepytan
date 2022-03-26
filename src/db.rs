@@ -1,6 +1,7 @@
 use argon2::PasswordHasher;
 use password_hash::PasswordHash;
 use sqlx::SqlitePool;
+use uuid::Uuid;
 
 use crate::data::Board;
 
@@ -9,25 +10,34 @@ type Result<T> = std::result::Result<T, sqlx::Error>;
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct Handle {
-    pub id: i64,
+    pub id: Uuid,
     pub name: String,
     pub passhash: String,
 }
+
+impl PartialEq for Handle {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Handle {}
 
 pub async fn insert_handle<'a>(
     pool: &'a SqlitePool,
     name: impl AsRef<str>,
     passhash: &'a PasswordHash<'a>,
-) -> Result<i64> {
-    Ok(sqlx::query("INSERT INTO handle (passhash, `name`) VALUES (?, ?)")
+) -> Result<Uuid> {
+    let id = Uuid::new_v4();
+    sqlx::query("INSERT INTO handle (id, passhash, `name`) VALUES (?, ?, ?)")
+        .bind(id)
         .bind(passhash.to_string())
         .bind(name.as_ref())
         .execute(pool)
-        .await?
-        .last_insert_rowid())
+        .await?;
+    Ok(id)
 }
 
-pub async fn get_handle(pool: &SqlitePool, id: i64) -> Result<Option<Handle>> {
+pub async fn get_handle(pool: &SqlitePool, id: Uuid) -> Result<Option<Handle>> {
     sqlx::query_as("SELECT * FROM handle WHERE id = ?")
         .bind(id)
         .fetch_optional(pool)
@@ -35,7 +45,5 @@ pub async fn get_handle(pool: &SqlitePool, id: i64) -> Result<Option<Handle>> {
 }
 
 pub async fn get_boards(pool: &SqlitePool) -> Result<Vec<Board>> {
-    sqlx::query_as("SELECT * FROM board")
-        .fetch_all(pool)
-        .await
+    sqlx::query_as("SELECT * FROM board").fetch_all(pool).await
 }

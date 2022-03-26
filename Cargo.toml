@@ -7,7 +7,7 @@ edition = "2021"
 axum = "0.4.4"
 tokio = { version = "1", features = ["full"] }
 askama = "0.11"
-sqlx = { version = "0.5.10", features = ["runtime-tokio-rustls", "sqlite"] }
+sqlx = { version = "0.5.10", features = ["runtime-tokio-rustls", "sqlite", "uuid"] }
 tracing-subscriber = "0.3.6"
 tracing = "0.1.29"
 color-eyre = "0.6.0"
@@ -18,3 +18,4 @@ argon2 = "0.3.2"
 async-session = "3.0.0"
 tower-cookies = "0.4.1"
 tower-http = { version = "0.2.1", features = ["fs"] }
+uuid = { version = "0.8.2", features = ["v4", "serde"] }

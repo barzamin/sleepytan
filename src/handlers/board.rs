@@ -1,4 +1,4 @@
-use crate::data::Post;
+use crate::{data::Post, db::Handle, templ::TemplCommon};
 use askama::Template;
 use axum::{
     extract::{Extension, Path},
