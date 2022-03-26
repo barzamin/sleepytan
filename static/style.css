@@ -32,10 +32,24 @@ summary { display: list-item; }
     src: url("/static/MingLiU.woff2");
 }
 
+@font-face {
+    font-family: "New Heterodox Mono";
+    src: url("/static/NewHeterodoxMono.woff2");
+}
+
 html {
     font-family: "MingLiU";
     font-size: 1.1rem;
     letter-spacing: .05rem;
+}
+
+code, pre {
+    font-family: "New Heterodox Mono";
+}
+
+.hid {
+    font-family: "New Heterodox Mono";
+    font-size: 0.8em;
 }
 
 /* -- general elements --*/
@@ -47,8 +61,31 @@ main {
     margin: 0 5rem;
 }
 
+.sticky {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
 /* -- index page -- */
 .board-list .board {
     background-color: antiquewhite;
     margin-bottom: 0.2em;
 }
+
+/* -- user page --*/
+article.user {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+section.mypage {
+    width: 50%;
+}
+
+section.posts {
+    width: 50%;
+}
+

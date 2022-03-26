@@ -1,6 +1,32 @@
+{% extends "layout.html" %}
+
+{% block main %}
 {% if let Some(handle) = handle %}
-    <h1>*{{handle.name}}</h1>
+    <h2>❇{{handle.name}} ❬<span class="hid">{{handle.id}}</span>❭</h2>
+    <article class="user">
+        {% if let Some(visitor_handle) = common.hctx %}
+            {% if visitor_handle == handle %}
+                wawaaa
+            {% endif %}
+        {% endif %}
+        <section class="mypage">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum alias, corporis repudiandae id cumque deserunt quia et harum soluta laborum, molestias voluptates animi. Hic mollitia vero nobis voluptates ipsam magni!
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis dolor fugiat expedita! Consectetur architecto optio laboriosam blanditiis perspiciatis. Ad similique, commodi facilis rerum mollitia voluptatum molestiae ullam at temporibus necessitatibus!
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem doloremque explicabo modi cupiditate? Itaque sequi esse molestiae, quos a omnis labore nam provident culpa quibusdam temporibus ipsum repellendus hic tenetur.
+        </section>
+        <section class="posts">
+            <div>post</div>
+            <div>post</div>
+            <div>post</div>
+            <div>post</div>
+            <div>post</div>
+            <div>post</div>
+            <div>post</div>
+            <div>post</div>
+        </section>
+    </article>
 {% else %}
-    <h1>***NO DATA FOUND.***</h1>
+    <h2>◯data missing◯</h2>
 {% endif %}
 
+{% endblock main %}

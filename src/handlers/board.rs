@@ -11,14 +11,20 @@ use crate::db;
 #[template(path = "board.html")]
 struct BoardTempl {
     posts: Vec<Post>,
+    common: TemplCommon,
 }
 
-pub async fn get(Path(code): Path<String>, Extension(pool): Extension<db::Pool>) -> Html<String> {
+pub async fn get(
+    hctx: Option<Handle>,
+    Path(code): Path<String>,
+    Extension(pool): Extension<db::Pool>,
+) -> Html<String> {
     let templ = BoardTempl {
         posts: vec![Post {
             subject: "/sleepgen/".to_string(),
             text: "uwu".to_string(),
         }],
+        common: TemplCommon { hctx },
     };
 
     Html(templ.render().unwrap())

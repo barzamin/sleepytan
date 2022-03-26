@@ -1,11 +1,10 @@
-use async_session::{async_trait, MemoryStore};
+use async_sqlx_session::SqliteSessionStore;
 use axum::{
-    extract::{FromRequest, RequestParts},
-    response::{Html, IntoResponse, Response},
+    http::StatusCode,
     routing::{get, get_service},
-    AddExtensionLayer, Router, http::StatusCode,
+    AddExtensionLayer, Router,
 };
-use color_eyre::eyre::Result;
+use color_eyre::eyre::{Result, WrapErr};
 use sqlx::sqlite::SqlitePool;
 use std::env;
 use tower::ServiceBuilder;
