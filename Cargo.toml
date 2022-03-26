@@ -19,3 +19,4 @@ async-session = "3.0.0"
 tower-cookies = "0.4.1"
 tower-http = { version = "0.2.1", features = ["fs"] }
 uuid = { version = "0.8.2", features = ["v4", "serde"] }
+async-sqlx-session = { git = "https://github.com/CyrusAlbright/async-sqlx-session", rev = "6e4da798d5bf475852f919488ed10e2a480e5610", features = ["sqlite", "tokio_rustls"] }

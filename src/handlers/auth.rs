@@ -1,6 +1,7 @@
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use askama::Template;
 use async_session::{MemoryStore, Session, SessionStore};
+use async_sqlx_session::SqliteSessionStore;
 use axum::{
     extract::{Extension, Form},
     http::{StatusCode, Uri},
@@ -13,6 +14,7 @@ use password_hash::{rand_core::OsRng, PasswordHasher, SaltString};
 use serde::Deserialize;
 use tower_cookies::{Cookie, Cookies};
 use tracing::{debug, info};
+use uuid::Uuid;
 
 use crate::db;
 use crate::{err::AppError, session::SESSION_COOKIE_NAME};
@@ -58,7 +60,7 @@ async fn get_login() -> Html<String> {
 async fn post_login(
     form: Form<LoginForm>,
     Extension(pool): Extension<db::Pool>,
-    Extension(sess_store): Extension<MemoryStore>,
+    Extension(sess_store): Extension<SqliteSessionStore>,
     cookies: Cookies,
 ) -> Result<impl IntoResponse, AppError> {
     let form = form.0;
@@ -89,7 +91,7 @@ async fn post_login(
 async fn post_signup(
     form: Form<SignupForm>,
     Extension(pool): Extension<db::Pool>,
-    Extension(sess_store): Extension<MemoryStore>,
+    Extension(sess_store): Extension<SqliteSessionStore>,
     cookies: Cookies,
 ) -> Result<impl IntoResponse, AppError> {
     let formdata = form.0;

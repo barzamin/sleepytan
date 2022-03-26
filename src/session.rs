@@ -45,7 +45,7 @@ where
             .cloned()
             .ok_or(AppError::GenericISE(eyre!("missing Cookies extension!")).into_response())?;
 
-        let session_store = Extension::<MemoryStore>::from_request(req)
+        let session_store = Extension::<SqliteSessionStore>::from_request(req)
             .await
             .map_err(|_| {
                 AppError::GenericISE(eyre!("missing session store extension!")).into_response()

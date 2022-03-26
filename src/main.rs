@@ -17,22 +17,31 @@ mod db;
 mod err;
 mod handlers;
 mod session;
-
-use session::AccessorCtx;
+mod templ;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
     color_eyre::install()?;
 
-    let sess_store = MemoryStore::new();
+    let pool = SqlitePool::connect(
+        &env::var("DATABASE_URL").wrap_err("no DATABASE_URL environment variable found")?,
+    )
+    .await?;
 
-    let pool = SqlitePool::connect(&env::var("DATABASE_URL")?).await?;
+    let sess_store = SqliteSessionStore::from_client(pool.clone());
+    sess_store.migrate().await?;
 
     let app = Router::new()
-        .nest("/static", get_service(ServeDir::new("static")).handle_error(|err: std::io::Error| async move {
-            (StatusCode::INTERNAL_SERVER_ERROR, format!("unhandled fs error: {}", err))
-        }))
+        .nest(
+            "/static",
+            get_service(ServeDir::new("static")).handle_error(|err: std::io::Error| async move {
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("unhandled fs error: {}", err),
+                )
+            }),
+        )
         .route("/", get(handlers::index::get))
         .route("/:code/", get(handlers::board::get))
         .route("/_/:id", get(handlers::handle::get))
