@@ -4,16 +4,16 @@
 {% if let Some(handle) = handle %}
     <h2>❇{{handle.name}} ❬<span class="hid">{{handle.id}}</span>❭</h2>
     <article class="user">
-        {% if let Some(visitor_handle) = common.hctx %}
-            {% if visitor_handle == handle %}
-                wawaaa
-            {% endif %}
+        {% if common.hctx.as_ref() == Some(handle) %}
+            <form action="/_/{{handle.id}}/update" method="post" class="mypage">
+                <textarea name="desc">{{handle.desc}}</textarea>
+                <input type="submit" value="update">
+            </form>
+        {% else %}
+            <section class="mypage">
+                {{handle.desc}}
+            </section>
         {% endif %}
-        <section class="mypage">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum alias, corporis repudiandae id cumque deserunt quia et harum soluta laborum, molestias voluptates animi. Hic mollitia vero nobis voluptates ipsam magni!
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis dolor fugiat expedita! Consectetur architecto optio laboriosam blanditiis perspiciatis. Ad similique, commodi facilis rerum mollitia voluptatum molestiae ullam at temporibus necessitatibus!
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem doloremque explicabo modi cupiditate? Itaque sequi esse molestiae, quos a omnis labore nam provident culpa quibusdam temporibus ipsum repellendus hic tenetur.
-        </section>
         <section class="posts">
             <div>post</div>
             <div>post</div>

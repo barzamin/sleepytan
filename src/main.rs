@@ -1,7 +1,7 @@
 use async_sqlx_session::SqliteSessionStore;
 use axum::{
     http::StatusCode,
-    routing::{get, get_service},
+    routing::{get, get_service, post},
     AddExtensionLayer, Router,
 };
 use color_eyre::eyre::{Result, WrapErr};
@@ -44,6 +44,7 @@ async fn main() -> Result<()> {
         .route("/", get(handlers::index::get))
         .route("/:code/", get(handlers::board::get))
         .route("/_/:id", get(handlers::handle::get))
+        .route("/_/:id/update", post(handlers::handle::post_update))
         .nest("/auth", handlers::auth::router())
         .layer(
             ServiceBuilder::new()
