@@ -50,5 +50,8 @@ pub async fn get_boards(pool: &SqlitePool) -> Result<Vec<Board>> {
 }
 
 pub async fn get_board(pool: &SqlitePool, code: impl AsRef<str>) -> Result<Option<Board>> {
-    sqlx::query_as("SELECT * FROM board WHERE code=?").bind(code.as_ref()).fetch_optional(pool).await
+    sqlx::query_as("SELECT * FROM board WHERE code=?")
+        .bind(code.as_ref())
+        .fetch_optional(pool)
+        .await
 }

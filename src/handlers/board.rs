@@ -1,8 +1,14 @@
-use crate::{data::{Post, Board}, db::Handle, templ::TemplCommon, err::AppError};
+use crate::{
+    data::{Board, Post},
+    db::Handle,
+    err::AppError,
+    templ::TemplCommon,
+};
 use askama::Template;
 use axum::{
     extract::{Extension, Path},
-    response::Html,
+    http::StatusCode,
+    response::{Html, IntoResponse},
 };
 
 use crate::db;
@@ -16,7 +22,7 @@ struct BoardTempl {
 }
 
 #[derive(Template)]
-#[template(path="board_404.html")]
+#[template(path = "board_404.html")]
 struct Board404 {
     common: TemplCommon,
 }
@@ -25,21 +31,31 @@ pub async fn get(
     hctx: Option<Handle>,
     Path(code): Path<String>,
     Extension(pool): Extension<db::Pool>,
-) -> Result<Html<String>, AppError> {
+) -> Result<impl IntoResponse, AppError> {
     let board = db::get_board(&pool, code).await?;
 
     if let Some(board) = board {
         let templ = BoardTempl {
             board: board,
             posts: vec![Post {
-                subject: "/sleepgen/".to_string(),
-                text: "uwu".to_string(),
+                subject: "anyone noticed hyperpop kinda fruity".to_string(),
+                text: "s6e21 turn up troon out by leroy and blackwinterwells".to_string(),
             }],
             common: TemplCommon { hctx },
         };
 
-        Ok(Html(templ.render().unwrap()))
+        Ok(Html(templ.render().unwrap()).into_response())
     } else {
-        Ok(Html(Board404 { common: TemplCommon { hctx } }.render().unwrap()))
+        Ok((
+            StatusCode::NOT_FOUND,
+            Html(
+                Board404 {
+                    common: TemplCommon { hctx },
+                }
+                .render()
+                .unwrap(),
+            ),
+        )
+            .into_response())
     }
 }

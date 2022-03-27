@@ -105,3 +105,18 @@ form.mypage textarea {
     min-width: 100%;
     max-width: 100%;
 }
+
+
+/*-- posts --*/
+.author {
+    color: #444;
+}
+
+.post header {
+    border-bottom: 1px solid #888;
+}
+
+.post {
+    background-color: #fffbde;
+    padding: .2em .2em .2em .7em;
+}

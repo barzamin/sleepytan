@@ -1,7 +1,7 @@
 use crate::{data::Post, db::Handle, err::AppError, templ::TemplCommon};
 use askama::Template;
 use axum::{
-    extract::{Extension, Path, Form},
+    extract::{Extension, Form, Path},
     response::{Html, Redirect},
 };
 use color_eyre::eyre::eyre;
@@ -51,7 +51,9 @@ pub async fn post_update(
     Extension(pool): Extension<db::Pool>,
 ) -> Result<Redirect, AppError> {
     if hctx.map(|h| h.id) != Some(uuid) {
-        return Err(AppError::GenericISE(eyre!("trying to update the mypage for a handle which is not yours!")));
+        return Err(AppError::GenericISE(eyre!(
+            "trying to update the mypage for a handle which is not yours!"
+        )));
     }
 
     sqlx::query("UPDATE handle SET desc=? WHERE id=?")

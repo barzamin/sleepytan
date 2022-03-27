@@ -1,8 +1,12 @@
 {% extends "layout.html" %}
 
 {% block main %}
+<h2>〝{{board.desc}}〟 <code>/{{board.code}}/</code></h2>
+
 {% for post in posts %}
-{{post.subject}}
-{{post.text}}
+    <div class="post" role="article">
+        <header><span class="subject">「{{post.subject}}」</span> <span class="author">❇3moon</span></header>
+        <p>{{post.text}}</p>
+    </div>
 {% endfor %}
 {% endblock %}
