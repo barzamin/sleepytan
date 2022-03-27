@@ -58,13 +58,11 @@ async fn get_login() -> Html<String> {
 }
 
 async fn post_login(
-    form: Form<LoginForm>,
+    Form(form): Form<LoginForm>,
     Extension(pool): Extension<db::Pool>,
     Extension(sess_store): Extension<SqliteSessionStore>,
     cookies: Cookies,
 ) -> Result<impl IntoResponse, AppError> {
-    let form = form.0;
-
     let handle = crate::db::get_handle(&pool, form.id).await?.unwrap(); // FIXME(3moon)!!
     let hash = PasswordHash::new(&handle.passhash)?;
 

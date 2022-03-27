@@ -52,7 +52,7 @@ code, pre {
     font-size: 0.8em;
 }
 
-/* -- general elements --*/
+/* -- general elements -- */
 h1 {
     letter-spacing: 1rem;
 }
@@ -65,6 +65,12 @@ main {
     position: fixed;
     bottom: 0;
     right: 0;
+}
+
+/* -- heading, common -- */
+.logotype {
+    text-decoration: none;
+    color: #111;
 }
 
 /* -- index page -- */
@@ -89,3 +95,13 @@ section.posts {
     width: 50%;
 }
 
+form.mypage {
+    width: 50%;
+}
+
+form.mypage textarea {
+    display: block;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+}

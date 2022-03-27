@@ -13,6 +13,7 @@ pub struct Handle {
     pub id: Uuid,
     pub name: String,
     pub passhash: String,
+    pub desc: String,
 }
 
 impl PartialEq for Handle {
@@ -46,4 +47,8 @@ pub async fn get_handle(pool: &SqlitePool, id: Uuid) -> Result<Option<Handle>> {
 
 pub async fn get_boards(pool: &SqlitePool) -> Result<Vec<Board>> {
     sqlx::query_as("SELECT * FROM board").fetch_all(pool).await
+}
+
+pub async fn get_board(pool: &SqlitePool, code: impl AsRef<str>) -> Result<Option<Board>> {
+    sqlx::query_as("SELECT * FROM board WHERE code=?").bind(code.as_ref()).fetch_optional(pool).await
 }
