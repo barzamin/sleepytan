@@ -35,12 +35,16 @@ pub async fn get(
     let board = db::get_board(&pool, code).await?;
 
     if let Some(board) = board {
+        let posts: Vec<Post> = sqlx::query_as("SELECT * FROM `post` WHERE `board` = ?")
+            .bind(board.id)
+            .fetch_all(&pool)
+            .await?;
         let templ = BoardTempl {
             board: board,
-            posts: vec![Post {
-                subject: "anyone noticed hyperpop kinda fruity".to_string(),
-                text: "s6e21 turn up troon out by leroy and blackwinterwells".to_string(),
-            }],
+            posts, /* vec![Post {
+                       subject: "anyone noticed hyperpop kinda fruity".to_string(),
+                       text: "s6e21 turn up troon out by leroy and blackwinterwells".to_string(),
+                   }], */
             common: TemplCommon { hctx },
         };
 

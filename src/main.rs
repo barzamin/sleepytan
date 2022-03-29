@@ -42,7 +42,12 @@ async fn main() -> Result<()> {
             }),
         )
         .route("/", get(handlers::index::get))
-        .route("/:code/", get(handlers::board::get))
+        .nest(
+            "/:code",
+            Router::new()
+                .route("/", get(handlers::board::get))
+                .route("/post", post(handlers::post::create_post)),
+        )
         .route("/_/:id", get(handlers::handle::get))
         .route("/_/:id/update", post(handlers::handle::post_update))
         .nest("/auth", handlers::auth::router())

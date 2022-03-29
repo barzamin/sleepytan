@@ -8,7 +8,7 @@ CREATE TABLE handle (
 
 CREATE TABLE board (
     id integer primary key,
-    code varchar not null,
+    code varchar not null unique,
     `desc` text not null
 );
 

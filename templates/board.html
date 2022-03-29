@@ -1,12 +1,27 @@
 {% extends "layout.html" %}
+{% import "macros.html" as macros %}
+
+{% macro makepost(board) %}
+<form class="makepost">
+    <input type="text">
+    <input type="submit" value="post">
+</form>
+{% endmacro %}
 
 {% block main %}
 <h2>〝{{board.desc}}〟 <code>/{{board.code}}/</code></h2>
 
+{% if let Some(handle) = common.hctx %}
+<div class="makepost-top">
+    {% call macros::makepost(board) %}
+</div>
+{% endif %}
+
 {% for post in posts %}
     <div class="post" role="article">
         <header><span class="subject">「{{post.subject}}」</span> <span class="author">❇3moon</span></header>
-        <p>{{post.text}}</p>
+        <p>{{post.body}}</p>
     </div>
 {% endfor %}
+
 {% endblock %}

@@ -55,6 +55,8 @@ code, pre {
 /* -- general elements -- */
 h1 {
     letter-spacing: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 main {
@@ -68,13 +70,17 @@ main {
 }
 
 /* -- heading, common -- */
+body > header {
+    margin: 1em;
+}
+
 .logotype {
     text-decoration: none;
     color: #111;
 }
 
 /* -- index page -- */
-.board-list .board {
+.board-list > .board {
     background-color: antiquewhite;
     margin-bottom: 0.2em;
 }
@@ -99,7 +105,7 @@ form.mypage {
     width: 50%;
 }
 
-form.mypage textarea {
+form.mypage > textarea {
     display: block;
     width: 100%;
     min-width: 100%;
@@ -112,11 +118,45 @@ form.mypage textarea {
     color: #444;
 }
 
-.post header {
+.post > header {
     border-bottom: 1px solid #888;
 }
 
 .post {
     background-color: #fffbde;
     padding: .2em .2em .2em .7em;
+}
+
+/*-- post form --*/
+form {
+    margin: 0;
+    padding: 0;
+}
+
+.makepost > label {
+    display: flex;
+    color: #888;
+    font-size: 0.8em;
+}
+
+.makepost > label input {
+    flex-grow: 1;
+    margin-left: 0.4em;
+}
+
+.makepost > textarea {
+    width: 50%;
+    max-width: 100%;
+    display: block;
+}
+
+.makepost-top {
+    margin-top: 0;
+    background-color: #efe;
+    margin: 1em;
+    padding: .5em;
+}
+
+.makepost-top textarea {
+    width: 100%;
 }
