@@ -43,16 +43,20 @@ html {
     letter-spacing: .05rem;
 }
 
-code, pre {
+/* -- general elements -- */
+code, pre, textarea {
     font-family: "New Heterodox Mono";
+}
+
+textarea {
+    font-size: .8em;
 }
 
 .hid {
     font-family: "New Heterodox Mono";
-    font-size: 0.8em;
+    font-size: .8em;
 }
 
-/* -- general elements -- */
 h1 {
     letter-spacing: 1rem;
     margin-top: 0;
@@ -125,6 +129,7 @@ form.mypage > textarea {
 .post {
     background-color: #fffbde;
     padding: .2em .2em .2em .7em;
+    margin-bottom: .5em;
 }
 
 /*-- post form --*/

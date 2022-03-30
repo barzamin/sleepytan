@@ -13,8 +13,15 @@ use crate::db;
 #[derive(Template)]
 #[template(path = "handle.html")]
 struct HandleTempl {
-    handle: Option<Handle>,
+    handle: Handle,
+    postcount: i64,
     posts: Vec<Post>,
+    common: TemplCommon,
+}
+
+#[derive(Template)]
+#[template(path = "handle_404.html")]
+struct Handle404Templ {
     common: TemplCommon,
 }
 
@@ -28,15 +35,30 @@ pub async fn get(
         AppError::Db(err)
     })?;
 
-    tracing::debug!(?handle, "fetched handle");
+    if let Some(handle) = handle {
+        tracing::debug!(?handle, "fetched handle");
 
-    let templ = HandleTempl {
-        handle,
-        posts: vec![],
-        common: TemplCommon { hctx },
-    };
+        let (postcount,): (i64,) = sqlx::query_as("SELECT COUNT(*) FROM `post` WHERE handle = ?")
+            .bind(handle.id)
+            .fetch_one(&pool)
+            .await?;
 
-    Ok(Html(templ.render().unwrap()))
+        let posts: Vec<Post> = sqlx::query_as("SELECT * FROM `post` WHERE `handle` = ?")
+            .bind(handle.id)
+            .fetch_all(&pool)
+            .await?;
+
+        let templ = HandleTempl {
+            handle,
+            postcount,
+            posts,
+            common: TemplCommon { hctx },
+        };
+
+        Ok(Html(templ.render().unwrap()))
+    } else {
+        Ok(Html(Handle404Templ { common: TemplCommon { hctx } }.render().unwrap()))
+    }
 }
 
 #[derive(Deserialize)]

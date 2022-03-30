@@ -39,6 +39,7 @@ pub async fn get(
             .bind(board.id)
             .fetch_all(&pool)
             .await?;
+
         let templ = BoardTempl {
             board: board,
             posts, /* vec![Post {

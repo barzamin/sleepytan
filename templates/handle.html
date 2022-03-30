@@ -1,32 +1,27 @@
 {% extends "layout.html" %}
 
 {% block main %}
-{% if let Some(handle) = handle %}
-    <h2>❇{{handle.name}} ❬<span class="hid">{{handle.id}}</span>❭</h2>
-    <article class="user">
-        {% if common.hctx.as_ref() == Some(handle) %}
-            <form action="/_/{{handle.id}}/update" method="post" class="mypage">
-                <textarea name="desc">{{handle.desc}}</textarea>
-                <input type="submit" value="update">
-            </form>
-        {% else %}
-            <section class="mypage">
-                {{handle.desc}}
-            </section>
-        {% endif %}
-        <section class="posts">
-            <div>post</div>
-            <div>post</div>
-            <div>post</div>
-            <div>post</div>
-            <div>post</div>
-            <div>post</div>
-            <div>post</div>
-            <div>post</div>
+<h2>❇{{handle.name}} ❬<span class="hid">{{handle.id}}</span>❭</h2>
+<article class="user">
+    {% if common.hctx.as_ref() == Some(handle) %}
+        <form action="/_/{{handle.id}}/update" method="post" class="mypage">
+            <textarea name="desc">{{handle.desc}}</textarea>
+            <input type="submit" value="update">
+        </form>
+    {% else %}
+        <section class="mypage">
+            {{handle.desc}}
         </section>
-    </article>
-{% else %}
-    <h2>◯data missing◯</h2>
-{% endif %}
-
+    {% endif %}
+    <section class="posts">
+        <div> POSTCOUNTIGN {{postcount}} </div>
+        {% for post in posts %}
+        {# todo: shorten posts #}
+        <div class="post" role="article">
+            <header><span class="subject">「{{post.subject}}」</span></header>
+            <p>{{post.body}}</p>
+        </div>
+        {% endfor %}
+    </section>
+</article>
 {% endblock main %}
