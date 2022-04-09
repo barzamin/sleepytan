@@ -58,7 +58,8 @@ async fn main() -> Result<()> {
                 .layer(AddExtensionLayer::new(sess_store)),
         );
 
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    let bind_addr = env::var("BIND_ADDR").unwrap_or_else(|_| "0.0.0.0:3000".to_string()).parse().expect("couldn't parse bind address");
+    axum::Server::bind(&bind_addr)
         .serve(app.into_make_service())
         .await
         .unwrap();
