@@ -10,14 +10,24 @@ use axum::{
     http::StatusCode,
     response::{Html, IntoResponse},
 };
+use chrono::{DateTime, Utc};
+use uuid::Uuid;
 
 use crate::db;
+
+struct FEPost {
+    subject: String,
+    body: String,
+    create_ts: DateTime<Utc>,
+    handle_name: String,
+    handle_id: Uuid,
+}
 
 #[derive(Template)]
 #[template(path = "board.html")]
 struct BoardTempl {
     board: Board,
-    posts: Vec<Post>,
+    posts: Vec<FEPost>,
     common: TemplCommon,
 }
 
@@ -35,13 +45,17 @@ pub async fn get(
     let board = db::get_board(&pool, code).await?;
 
     if let Some(board) = board {
-        let posts: Vec<Post> = sqlx::query_as("SELECT * FROM `post` WHERE `board` = ?")
-            .bind(board.id)
+        let posts = sqlx::query_as!(FEPost, r#"
+SELECT post.subject, post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
+FROM `post`
+INNER JOIN `handle` ON
+  `handle`.id = `post`.handle
+WHERE `post`.`board` = ?;"#, board.id)
             .fetch_all(&pool)
             .await?;
 
         let templ = BoardTempl {
-            board: board,
+            board,
             posts, /* vec![Post {
                        subject: "anyone noticed hyperpop kinda fruity".to_string(),
                        text: "s6e21 turn up troon out by leroy and blackwinterwells".to_string(),
