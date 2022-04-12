@@ -45,11 +45,12 @@ async fn main() -> Result<()> {
         .nest(
             "/:code",
             Router::new()
+                .nest("/:id", Router::new().route("/reply", post(handlers::post::reply)))
                 .route("/", get(handlers::board::get))
                 .route("/post", post(handlers::post::create_post)),
         )
         .route("/_/:id", get(handlers::handle::get))
-        .route("/_/:id/update", post(handlers::handle::post_update))
+        .route("/_/:id/update", post(handlers::handle::update))
         .route("/huh", get(handlers::misc::huh))
         .nest("/auth", handlers::auth::router())
         .layer(

@@ -16,10 +16,10 @@ CREATE TABLE post (
     id INTEGER PRIMARY KEY,
     board INTEGER REFERENCES board(id) NOT NULL,
     handle blob REFERENCES handle(id) NOT NULL,
-    parent INTEGER REFERENCES post(id), -- if null: we're root of a thread
+    parent INTEGER REFERENCES post(id) ON DELETE CASCADE, -- if null: we're root of a thread
     attachment INTEGER REFERENCES attachment(id),
 
-    subject TEXT,
+    subject TEXT NOT NULL,
     body TEXT NOT NULL,
     create_ts TIMESTAMP NOT NULL DEFAULT (datetime('now'))
 );

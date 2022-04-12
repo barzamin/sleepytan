@@ -12,15 +12,20 @@
 <h2>〝{{board.desc}}〟 <code>/{{board.code}}/</code></h2>
 
 {% if let Some(handle) = common.hctx %}
-<div class="makepost-top">
+<div class="makepost-thread">
     {% call macros::makepost(board) %}
 </div>
 {% endif %}
 
-{% for post in posts %}
-    <div class="post" role="article">
-        <header><span class="subject">「{{post.subject}}」</span> <span class="author"><a href="/_/{{post.handle_id}}">❇{{post.handle_name}}</a></span> <span class="timestamp">{{post.create_ts}}</span></header>
-        <p>{{post.body}}</p>
+{% for thread in threads %}
+    <div class="thread">
+        <span class="subject">「{{thread.subject}}」</span> 
+        {% for post in thread.posts %}
+            <div class="post" role="article">
+                <header><span class="author"><a href="/_/{{post.handle_id}}">❇{{post.handle_name}}</a></span> <span class="timestamp">{{post.create_ts}}</span></header>
+                <p>{{post.body}}</p>
+            </div>
+        {% endfor %}
     </div>
 {% endfor %}
 

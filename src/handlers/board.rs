@@ -16,18 +16,23 @@ use uuid::Uuid;
 use crate::db;
 
 struct FEPost {
-    subject: String,
     body: String,
     create_ts: DateTime<Utc>,
     handle_name: String,
     handle_id: Uuid,
 }
 
+struct FEThread {
+    subject: String,
+    posts: Vec<FEPost>,
+}
+
 #[derive(Template)]
 #[template(path = "board.html")]
 struct BoardTempl {
     board: Board,
-    posts: Vec<FEPost>,
+    // posts: Vec<FEPost>,
+    threads: Vec<FEThread>,
     common: TemplCommon,
 }
 
@@ -45,22 +50,27 @@ pub async fn get(
     let board = db::get_board(&pool, code).await?;
 
     if let Some(board) = board {
-//         let posts = sqlx::query_as!(FEPost, r#"
-// SELECT post.subject, post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
-// FROM `post`
-// INNER JOIN `handle` ON
-//   `handle`.id = `post`.handle
-// WHERE `post`.`board` = ?;"#, board.id)
-//             .fetch_all(&pool)
-//             .await?;
-        let posts = vec![];
+        let threads = {
+            // todo: limit and sort
+            let mut threads = vec![];
+            for thread in sqlx::query!(r#"SELECT * FROM threads WHERE board = ?"#, board.id).fetch_all(&pool).await? {
+                threads.push(FEThread {
+                    subject: thread.subject,
+                    posts: sqlx::query_as!(FEPost, r#"
+SELECT post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
+FROM post
+INNER JOIN handle ON
+    handle.id = post.handle
+WHERE
+    post.parent = ? OR post.id = ?"#, thread.id, thread.id).fetch_all(&pool).await?
+                });
+            }
+            threads
+        };
 
         let templ = BoardTempl {
             board,
-            posts, /* vec![Post {
-                       subject: "anyone noticed hyperpop kinda fruity".to_string(),
-                       text: "s6e21 turn up troon out by leroy and blackwinterwells".to_string(),
-                   }], */
+            threads,
             common: TemplCommon { hctx },
         };
 

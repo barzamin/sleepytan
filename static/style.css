@@ -128,7 +128,13 @@ form.mypage > textarea {
 }
 
 
-/*-- posts --*/
+/*-- threads & posts --*/
+.thread {
+    padding: .2em .2em .2em 1em;
+    margin-bottom: 1em;
+    background-color: #fffce4;
+}
+
 .author {
     color: #444;
 }
@@ -142,7 +148,7 @@ form.mypage > textarea {
 }
 
 .post {
-    background-color: #fffbde;
+    background-color: #e0d9a4;
     padding: .2em .2em .2em .7em;
     margin-bottom: .5em;
 }
@@ -171,13 +177,13 @@ form {
     display: block;
 }
 
-.makepost-top {
+.makepost-thread {
     margin-top: 0;
     background-color: #efe;
     margin: 1em;
     padding: .5em;
 }
 
-.makepost-top textarea {
+.makepost-thread textarea {
     width: 100%;
 }

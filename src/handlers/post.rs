@@ -42,3 +42,20 @@ pub async fn create_post(
 
     Ok(Redirect::to(format!("/{}/", board.code).parse().unwrap()))
 }
+
+#[derive(Deserialize)]
+pub struct ReplyForm {
+    body: String,
+}
+
+pub async fn reply(
+    hctx: Handle,
+    Form(form): Form<ReplyForm>,
+    Path(board_code): Path<String>,
+    Path(post_id): Path<i64>,
+    Extension(pool): Extension<db::Pool>,
+) -> Result<Redirect, AppError> {
+    debug!(%board_code, %post_id, "attempting reply");
+
+    Ok(Redirect::to(Uri::from_static("/")))
+}

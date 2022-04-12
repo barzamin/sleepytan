@@ -66,7 +66,7 @@ pub struct UpdateHandleForm {
     desc: String,
 }
 
-pub async fn post_update(
+pub async fn update(
     hctx: Option<Handle>,
     Form(form): Form<UpdateHandleForm>,
     Path(uuid): Path<Uuid>,
