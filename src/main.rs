@@ -1,13 +1,15 @@
 use async_sqlx_session::SqliteSessionStore;
 use axum::{
+    error_handling::HandleErrorLayer,
     http::StatusCode,
+    response::IntoResponse,
     routing::{get, get_service, post},
     AddExtensionLayer, Router,
 };
 use color_eyre::eyre::{Result, WrapErr};
 use sqlx::sqlite::SqlitePool;
-use std::env;
-use tower::ServiceBuilder;
+use std::{borrow::Cow, env};
+use tower::{BoxError, ServiceBuilder};
 use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
 
@@ -45,7 +47,10 @@ async fn main() -> Result<()> {
         .nest(
             "/:code",
             Router::new()
-                .nest("/:id", Router::new().route("/reply", post(handlers::post::reply)))
+                .nest(
+                    "/:id",
+                    Router::new().route("/reply", post(handlers::post::reply)),
+                )
                 .route("/", get(handlers::board::get))
                 .route("/post", post(handlers::post::create_post)),
         )
@@ -60,7 +65,10 @@ async fn main() -> Result<()> {
                 .layer(AddExtensionLayer::new(sess_store)),
         );
 
-    let bind_addr = env::var("BIND_ADDR").unwrap_or_else(|_| "0.0.0.0:3000".to_string()).parse().expect("couldn't parse bind address");
+    let bind_addr = env::var("BIND_ADDR")
+        .unwrap_or_else(|_| "0.0.0.0:3000".to_string())
+        .parse()
+        .expect("couldn't parse bind address");
     axum::Server::bind(&bind_addr)
         .serve(app.into_make_service())
         .await

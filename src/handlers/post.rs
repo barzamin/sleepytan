@@ -32,13 +32,23 @@ pub async fn create_post(
         .await?
         .ok_or_else(|| AppError::GenericISE(eyre!("can't post to a nonexistent board")))?;
 
-    sqlx::query("INSERT INTO `post` (handle, board, subject, body) VALUES (?, ?, ?, ?)")
-        .bind(hctx.id)
-        .bind(board.id)
-        .bind(form.subject)
-        .bind(form.body)
-        .execute(&pool)
-        .await?;
+    let thread = sqlx::query!(
+        "INSERT INTO `thread` (board, subject) VALUES (?, ?)",
+        board.id,
+        form.subject
+    )
+    .execute(&pool)
+    .await?
+    .last_insert_rowid();
+
+    sqlx::query!(
+        "INSERT INTO `post` (handle, thread, body) VALUES (?, ?, ?)",
+        hctx.id,
+        thread,
+        form.body
+    )
+    .execute(&pool)
+    .await?;
 
     Ok(Redirect::to(format!("/{}/", board.code).parse().unwrap()))
 }

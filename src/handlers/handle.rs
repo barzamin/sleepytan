@@ -57,7 +57,13 @@ pub async fn get(
 
         Ok(Html(templ.render().unwrap()))
     } else {
-        Ok(Html(Handle404Templ { common: TemplCommon { hctx } }.render().unwrap()))
+        Ok(Html(
+            Handle404Templ {
+                common: TemplCommon { hctx },
+            }
+            .render()
+            .unwrap(),
+        ))
     }
 }
 

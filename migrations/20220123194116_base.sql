@@ -12,14 +12,19 @@ CREATE TABLE board (
     `desc` TEXT NOT NULL
 );
 
-CREATE TABLE post (
+CREATE TABLE thread (
     id INTEGER PRIMARY KEY,
     board INTEGER REFERENCES board(id) NOT NULL,
-    handle blob REFERENCES handle(id) NOT NULL,
-    parent INTEGER REFERENCES post(id) ON DELETE CASCADE, -- if null: we're root of a thread
+    subject TEXT NOT NULL,
+    bump_ts TIMESTAMP NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE post (
+    id INTEGER PRIMARY KEY,
+    thread INTEGER REFERENCES thread(id) NOT NULL,
+    handle BLOB REFERENCES handle(id) NOT NULL,
     attachment INTEGER REFERENCES attachment(id),
 
-    subject TEXT NOT NULL,
     body TEXT NOT NULL,
     create_ts TIMESTAMP NOT NULL DEFAULT (datetime('now'))
 );
@@ -29,15 +34,3 @@ CREATE TABLE attachment (
     `name` VARCHAR NOT NULL,
     `blobhash` BLOB NOT NULL
 );
-
-CREATE VIEW threads AS
-SELECT
-    post.id,
-    post.board,
-    post.handle,
-    post.subject,
-    post.body,
-    post.create_ts
-FROM post
-WHERE
-    post.parent IS NULL;

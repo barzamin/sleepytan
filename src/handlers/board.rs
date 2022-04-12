@@ -1,9 +1,4 @@
-use crate::{
-    data::Board,
-    db::Handle,
-    err::AppError,
-    templ::TemplCommon,
-};
+use crate::{data::Board, db::Handle, err::AppError, templ::TemplCommon};
 use askama::Template;
 use axum::{
     extract::{Extension, Path},
@@ -16,6 +11,7 @@ use uuid::Uuid;
 use crate::db;
 
 struct FEPost {
+    id: i64,
     body: String,
     create_ts: DateTime<Utc>,
     handle_name: String,
@@ -53,16 +49,29 @@ pub async fn get(
         let threads = {
             // todo: limit and sort
             let mut threads = vec![];
-            for thread in sqlx::query!(r#"SELECT * FROM threads WHERE board = ?"#, board.id).fetch_all(&pool).await? {
+            for thread in sqlx::query!(
+                r#"
+SELECT *
+FROM thread
+WHERE
+    board = ?
+ORDER BY bump_ts DESC
+LIMIT ?"#,
+                board.id,
+                /* TODO */ 10i64
+            )
+            .fetch_all(&pool)
+            .await?
+            {
                 threads.push(FEThread {
                     subject: thread.subject,
                     posts: sqlx::query_as!(FEPost, r#"
-SELECT post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
+SELECT post.id, post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
 FROM post
 INNER JOIN handle ON
     handle.id = post.handle
 WHERE
-    post.parent = ? OR post.id = ?"#, thread.id, thread.id).fetch_all(&pool).await?
+    post.thread = ?"#, thread.id).fetch_all(&pool).await?
                 });
             }
             threads

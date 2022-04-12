@@ -84,6 +84,23 @@ main {
     right: 0;
 }
 
+/* -- error pages --*/
+main.error {
+    margin: 0;
+    font-size: 2em;
+    color: #eee;
+    background-color: #111;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main.error footer {
+    font-size: 0.5em;
+}
+
 /* -- heading, common -- */
 body > header {
     margin: 1em;
@@ -132,7 +149,7 @@ form.mypage > textarea {
 .thread {
     padding: .2em .2em .2em 1em;
     margin-bottom: 1em;
-    background-color: #fffce4;
+    border: 1px solid #333;
 }
 
 .author {
@@ -148,7 +165,7 @@ form.mypage > textarea {
 }
 
 .post {
-    background-color: #e0d9a4;
+    background-color: #fffbde;
     padding: .2em .2em .2em .7em;
     margin-bottom: .5em;
 }

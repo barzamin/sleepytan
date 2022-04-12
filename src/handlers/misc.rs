@@ -9,9 +9,7 @@ struct HuhTempl {
     common: TemplCommon,
 }
 
-pub async fn huh(
-    hctx: Option<Handle>,
-) -> Result<Html<String>, AppError> {
+pub async fn huh(hctx: Option<Handle>) -> Result<Html<String>, AppError> {
     let templ = HuhTempl {
         common: TemplCommon { hctx },
     };

@@ -4,6 +4,7 @@ use axum::{
     response::{Html, IntoResponse},
 };
 use color_eyre::eyre;
+use tower::BoxError;
 
 #[derive(Template)]
 #[template(path = "error.html")]
