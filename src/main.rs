@@ -50,6 +50,7 @@ async fn main() -> Result<()> {
         )
         .route("/_/:id", get(handlers::handle::get))
         .route("/_/:id/update", post(handlers::handle::post_update))
+        .route("/huh", get(handlers::misc::huh))
         .nest("/auth", handlers::auth::router())
         .layer(
             ServiceBuilder::new()

@@ -40,5 +40,5 @@ pub async fn create_post(
         .execute(&pool)
         .await?;
 
-    Ok(Redirect::to(Uri::from_static("/")))
+    Ok(Redirect::to(format!("/{}/", board.code).parse().unwrap()))
 }

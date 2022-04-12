@@ -43,6 +43,17 @@ html {
     letter-spacing: .05rem;
 }
 
+input[type=submit] {
+    font-family: "MingLiU";
+    font-size: .9rem;
+    letter-spacing: .05rem;
+}
+
+input[type=text] {
+    font-family: "MingLiU";
+    letter-spacing: .05rem;
+}
+
 /* -- general elements -- */
 code, pre, textarea {
     font-family: "New Heterodox Mono";
@@ -122,6 +133,10 @@ form.mypage > textarea {
     color: #444;
 }
 
+.post > header .timestamp {
+    float: right;
+}
+
 .post > header {
     border-bottom: 1px solid #888;
 }
@@ -152,6 +167,7 @@ form {
 .makepost > textarea {
     width: 50%;
     max-width: 100%;
+    min-width: 100%;
     display: block;
 }
 

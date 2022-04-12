@@ -1,4 +1,3 @@
-use argon2::PasswordHasher;
 use password_hash::PasswordHash;
 use sqlx::SqlitePool;
 use uuid::Uuid;

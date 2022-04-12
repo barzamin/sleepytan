@@ -1,5 +1,5 @@
 use crate::{
-    data::{Board, Post},
+    data::Board,
     db::Handle,
     err::AppError,
     templ::TemplCommon,
@@ -45,14 +45,15 @@ pub async fn get(
     let board = db::get_board(&pool, code).await?;
 
     if let Some(board) = board {
-        let posts = sqlx::query_as!(FEPost, r#"
-SELECT post.subject, post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
-FROM `post`
-INNER JOIN `handle` ON
-  `handle`.id = `post`.handle
-WHERE `post`.`board` = ?;"#, board.id)
-            .fetch_all(&pool)
-            .await?;
+//         let posts = sqlx::query_as!(FEPost, r#"
+// SELECT post.subject, post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"
+// FROM `post`
+// INNER JOIN `handle` ON
+//   `handle`.id = `post`.handle
+// WHERE `post`.`board` = ?;"#, board.id)
+//             .fetch_all(&pool)
+//             .await?;
+        let posts = vec![];
 
         let templ = BoardTempl {
             board,

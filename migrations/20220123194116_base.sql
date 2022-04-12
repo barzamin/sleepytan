@@ -1,22 +1,43 @@
 CREATE TABLE handle (
-    id blob primary key,
-    passhash varchar not null,
-    `name` varchar not null,
-    `desc` text,
-    create_ts timestamp not null default (datetime('now'))
+    id BLOB PRIMARY KEY,
+    passhash VARCHAR NOT NULL,
+    `name` VARCHAR NOT NULL,
+    `desc` TEXT,
+    create_ts TIMESTAMP NOT NULL DEFAULT(datetime('now'))
 );
 
 CREATE TABLE board (
-    id integer primary key,
-    code varchar not null unique,
-    `desc` text not null
+    id INTEGER PRIMARY KEY,
+    code VARCHAR NOT NULL UNIQUE,
+    `desc` TEXT NOT NULL
 );
 
 CREATE TABLE post (
-    id integer primary key,
-    handle blob references handle(id) not null,
-    board integer references board(id) not null,
-    `subject` text not null,
-    body text not null,
-    create_ts timestamp not null default (datetime('now'))
+    id INTEGER PRIMARY KEY,
+    board INTEGER REFERENCES board(id) NOT NULL,
+    handle blob REFERENCES handle(id) NOT NULL,
+    parent INTEGER REFERENCES post(id), -- if null: we're root of a thread
+    attachment INTEGER REFERENCES attachment(id),
+
+    subject TEXT,
+    body TEXT NOT NULL,
+    create_ts TIMESTAMP NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE attachment (
+    id INTEGER PRIMARY KEY,
+    `name` VARCHAR NOT NULL,
+    `blobhash` BLOB NOT NULL
+);
+
+CREATE VIEW threads AS
+SELECT
+    post.id,
+    post.board,
+    post.handle,
+    post.subject,
+    post.body,
+    post.create_ts
+FROM post
+WHERE
+    post.parent IS NULL;

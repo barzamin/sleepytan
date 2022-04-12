@@ -1,4 +1,4 @@
-use async_session::{async_trait, MemoryStore, SessionStore};
+use async_session::{async_trait, SessionStore};
 use async_sqlx_session::SqliteSessionStore;
 use axum::{
     extract::{Extension, FromRequest, RequestParts},

@@ -1,6 +1,6 @@
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use askama::Template;
-use async_session::{MemoryStore, Session, SessionStore};
+use async_session::{Session, SessionStore};
 use async_sqlx_session::SqliteSessionStore;
 use axum::{
     extract::{Extension, Form},
