@@ -27,14 +27,13 @@ struct FEThread {
 #[template(path = "board.html")]
 struct BoardTempl {
     board: Board,
-    // posts: Vec<FEPost>,
     threads: Vec<FEThread>,
     common: TemplCommon,
 }
 
 #[derive(Template)]
 #[template(path = "board_404.html")]
-struct Board404 {
+struct Board404Templ {
     common: TemplCommon,
 }
 
@@ -88,7 +87,7 @@ WHERE
         Ok((
             StatusCode::NOT_FOUND,
             Html(
-                Board404 {
+                Board404Templ {
                     common: TemplCommon { hctx },
                 }
                 .render()

@@ -2,8 +2,9 @@
 {% import "macros.html" as macros %}
 
 {% macro makepost(board) %}
-<form class="makepost">
-    <input type="text">
+<form class="makepost" action="/{{board.code}}/post" method="post">
+    <label>subject <input type="text" name="subject"></label>
+    <textarea name="body"></textarea>
     <input type="submit" value="post">
 </form>
 {% endmacro %}
@@ -13,7 +14,7 @@
 
 {% if let Some(handle) = common.hctx %}
 <div class="makepost-thread">
-    {% call macros::makepost(board) %}
+    {% call makepost(board) %}
 </div>
 {% endif %}
 

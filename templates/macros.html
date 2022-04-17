@@ -1,7 +1,0 @@
-{% macro makepost(board) %}
-<form class="makepost" action="/{{board.code}}/post" method="post">
-    <label>subject <input type="text" name="subject"></label>
-    <textarea name="body"></textarea>
-    <input type="submit" value="post">
-</form>
-{% endmacro %}

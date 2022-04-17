@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% import "macros.html" as macros %}
+
+{% macro makereply(board, post) %}
+<form class="makereply" action="/{{board.code}}/{{post.id}}/reply" method="post">
+    <textarea name="body"></textarea>
+    <input type="submit" value="post">
+</form>
+{% endmacro %}
+
+{% block main %}
+<span class="subject">「{{thread.subject}}」</span> 
+{% for post in thread.posts %}
+    <div class="post" role="article">
+        <header><span class="author"><a href="/_/{{post.handle_id}}">❇{{post.handle_name}}</a></span> <span class="timestamp">{{post.create_ts}}</span></header>
+        <p>{{post.body}}</p>
+    </div>
+{% endfor %}
+
+{% call makereply(board, thread) %}
+
+{% endblock %}

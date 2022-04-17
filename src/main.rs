@@ -49,10 +49,12 @@ async fn main() -> Result<()> {
             Router::new()
                 .nest(
                     "/:id",
-                    Router::new().route("/reply", post(handlers::post::reply)),
+                    Router::new()
+                        .route("/", get(handlers::thread::get))
+                        .route("/reply", post(handlers::thread::reply)),
                 )
                 .route("/", get(handlers::board::get))
-                .route("/post", post(handlers::post::create_post)),
+                .route("/post", post(handlers::thread::create)),
         )
         .route("/_/:id", get(handlers::handle::get))
         .route("/_/:id/update", post(handlers::handle::update))
