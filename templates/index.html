@@ -6,4 +6,14 @@
         <div class="board"><a href="/{{board.code}}">/{{board.code}}/</a> - {{board.desc}}</div>
     {% endfor %}
     </div>
+
+    <div class="recent-posts">
+        <header><h2>recent posts</h2></header>
+        {% for post in recent_posts %}
+        <div class="post" role="article">
+            <header><span class="author"><a href="/~{{post.handle_id}}">❇{{post.handle_name}}</a></span> <span class="timestamp">{{post.create_ts}}</span></header>
+            <p>{{post.body}}</p>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock main %}

@@ -32,7 +32,6 @@ struct FEThread {
 #[derive(Template)]
 #[template(path = "thread.html")]
 struct ThreadTempl {
-    board: Board,
     thread: FEThread,
     common: TemplCommon,
 }
@@ -90,15 +89,9 @@ pub async fn create(
 
 pub async fn get(
     hctx: Option<Handle>,
-    Path((board_code, id)): Path<(String, i64)>,
+    Path(id): Path<i64>,
     Extension(pool): Extension<db::Pool>,
 ) -> Result<impl IntoResponse, AppError> {
-    let board: Board = sqlx::query_as("SELECT * FROM board WHERE code = ?")
-        .bind(board_code)
-        .fetch_optional(&pool)
-        .await?
-        .ok_or_else(|| AppError::GenericISE(eyre!("can't get post on a nonexistent board")))?;
-
     if let Some(thread) = sqlx::query!("SELECT * FROM thread WHERE id = ?", id)
         .fetch_optional(&pool)
         .await?
@@ -116,7 +109,6 @@ pub async fn get(
         };
 
         let templ = ThreadTempl {
-            board,
             thread,
             common: TemplCommon { hctx },
         };
@@ -139,15 +131,10 @@ pub async fn get(
 pub async fn reply(
     hctx: Handle,
     Form(form): Form<ReplyForm>,
-    Path((board_code, thread_id)): Path<(String, i64)>,
+    Path(thread_id): Path<i64>,
     Extension(pool): Extension<db::Pool>,
 ) -> Result<Redirect, AppError> {
-    debug!(%board_code, %thread_id, "attempting reply to thread");
-    let board: Board = sqlx::query_as("SELECT * FROM board WHERE code = ?")
-        .bind(board_code)
-        .fetch_optional(&pool)
-        .await?
-        .ok_or_else(|| AppError::GenericISE(eyre!("can't reply on a nonexistent board")))?;
+    debug!(%thread_id, "attempting reply to thread");
 
     sqlx::query!(
         "INSERT INTO `post` (handle, thread, body) VALUES (?, ?, ?)",
@@ -158,6 +145,6 @@ pub async fn reply(
     .execute(&pool)
     .await?;
 
-    Ok(Redirect::to(format!("/{}/", board.code).parse().unwrap()))
+    Ok(Redirect::to(format!("/_/{}", thread_id).parse().unwrap()))
 
 }

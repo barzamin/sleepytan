@@ -19,6 +19,7 @@ struct FEPost {
 }
 
 struct FEThread {
+    id: i64,
     subject: String,
     posts: Vec<FEPost>,
 }
@@ -63,6 +64,7 @@ LIMIT ?"#,
             .await?
             {
                 threads.push(FEThread {
+                    id: thread.id,
                     subject: thread.subject,
                     posts: sqlx::query_as!(FEPost, r#"
 SELECT post.id, post.body, post.create_ts as "create_ts: _", handle.name as handle_name, handle.id as "handle_id!: _"

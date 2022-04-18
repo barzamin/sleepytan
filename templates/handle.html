@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
 {% block main %}
-<h2>❇{{handle.name}} ❬<span class="hid">{{handle.id}}</span>❭</h2>
+<h2>❇{{handle.name}} <span class="postcount">{{postcount}}</span> ❬<span class="hid">{{handle.id}}</span>❭ </h2>
 <article class="user">
     {% if common.hctx.as_ref() == Some(handle) %}
-        <form action="/_/{{handle.id}}/update" method="post" class="mypage">
+        <form action="/~{{handle.id}}/update" method="post" class="mypage">
             <textarea name="desc">{{handle.desc}}</textarea>
             <input type="submit" value="update">
         </form>
@@ -14,11 +14,10 @@
         </section>
     {% endif %}
     <section class="posts">
-        <div> POSTCOUNTIGN {{postcount}} </div>
         {% for post in posts %}
         {# todo: shorten posts #}
         <div class="post" role="article">
-            <header><span class="subject">「{{post.subject}}」</span></header>
+            <header><span class="subject">「<a href="/_/{{post.thread_id}}">{{post.thread_subject}}</a>」</span> <span class="timestamp">{{post.create_ts}}</span></header>
             <p>{{post.body}}</p>
         </div>
         {% endfor %}

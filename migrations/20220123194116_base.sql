@@ -34,3 +34,11 @@ CREATE TABLE attachment (
     `name` VARCHAR NOT NULL,
     `blobhash` BLOB NOT NULL
 );
+
+-- triggers --
+CREATE TRIGGER bump_thread AFTER INSERT ON post
+BEGIN
+    UPDATE thread SET bump_ts = NEW.create_ts
+    WHERE id = NEW.thread;
+    -- if saging were implemented, it'd be done here.
+END;

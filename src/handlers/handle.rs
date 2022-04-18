@@ -4,18 +4,27 @@ use axum::{
     extract::{Extension, Form, Path},
     response::{Html, Redirect},
 };
+use chrono::{DateTime, Utc};
 use color_eyre::eyre::eyre;
 use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::db;
 
+struct FEPost {
+    id: i64,
+    create_ts: DateTime<Utc>,
+    body: String,
+    thread_subject: String,
+    thread_id: i64,
+}
+
 #[derive(Template)]
 #[template(path = "handle.html")]
 struct HandleTempl {
     handle: Handle,
     postcount: i64,
-    posts: Vec<Post>,
+    posts: Vec<FEPost>,
     common: TemplCommon,
 }
 
@@ -43,8 +52,11 @@ pub async fn get(
             .fetch_one(&pool)
             .await?;
 
-        let posts: Vec<Post> = sqlx::query_as("SELECT * FROM `post` WHERE `handle` = ?")
-            .bind(handle.id)
+        let posts = sqlx::query_as!(FEPost, r#"SELECT post.id, post.body, post.create_ts as "create_ts: _", thread.subject as thread_subject, thread.id as thread_id
+FROM post
+INNER JOIN thread ON
+    thread.id = post.thread
+WHERE handle = ?"#, handle.id)
             .fetch_all(&pool)
             .await?;
 
@@ -90,5 +102,5 @@ pub async fn update(
         .execute(&pool)
         .await?;
 
-    Ok(Redirect::to(format!("/_/{}", uuid).parse().unwrap())) // TODO? can improve?
+    Ok(Redirect::to(format!("/~{}", uuid).parse().unwrap())) // TODO? can improve?
 }

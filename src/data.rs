@@ -2,7 +2,6 @@ use sqlx::FromRow;
 
 #[derive(Debug, FromRow)]
 pub struct Post {
-    pub subject: String,
     pub body: String,
 }
 

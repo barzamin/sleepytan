@@ -47,17 +47,13 @@ async fn main() -> Result<()> {
         .nest(
             "/:code",
             Router::new()
-                .nest(
-                    "/:id",
-                    Router::new()
-                        .route("/", get(handlers::thread::get))
-                        .route("/reply", post(handlers::thread::reply)),
-                )
                 .route("/", get(handlers::board::get))
                 .route("/post", post(handlers::thread::create)),
         )
-        .route("/_/:id", get(handlers::handle::get))
-        .route("/_/:id/update", post(handlers::handle::update))
+        .route("/_/:id", get(handlers::thread::get))
+        .route("/_/:id/reply", post(handlers::thread::reply))
+        .route("/~:id", get(handlers::handle::get))
+        .route("/~:id/update", post(handlers::handle::update))
         .route("/huh", get(handlers::misc::huh))
         .nest("/auth", handlers::auth::router())
         .layer(

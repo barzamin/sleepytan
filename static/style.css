@@ -20,6 +20,7 @@
 */
 
 /* -- fixups for dumb browser behavior -- */
+* { box-sizing: border-box; }
 body { margin: 0; }
 main { display: block; }
 details { display: block; }
@@ -82,6 +83,7 @@ main {
     position: fixed;
     bottom: 0;
     right: 0;
+    background-color: #00ffff;
 }
 
 /* -- error pages --*/
@@ -125,23 +127,22 @@ article.user {
     flex-wrap: wrap;
 }
 
-section.mypage {
+article.user > * {
     width: 50%;
 }
 
-section.posts {
-    width: 50%;
-}
-
-form.mypage {
-    width: 50%;
+article.user > form.mypage {
+    padding-right: 2em;
 }
 
 form.mypage > textarea {
     display: block;
-    width: 100%;
     min-width: 100%;
     max-width: 100%;
+}
+
+.postcount {
+    background-color: #ffb6c1;
 }
 
 
@@ -152,13 +153,13 @@ form.mypage > textarea {
     border: 1px solid #333;
 }
 
+.thread > .threadlink { float: right; }
+
 .author {
     color: #444;
 }
 
-.post > header .timestamp {
-    float: right;
-}
+.post > header .timestamp { float: right; }
 
 .post > header {
     border-bottom: 1px solid #888;
@@ -169,6 +170,7 @@ form.mypage > textarea {
     padding: .2em .2em .2em .7em;
     margin-bottom: .5em;
 }
+
 
 /*-- post form --*/
 form {
@@ -188,19 +190,20 @@ form {
 }
 
 .makepost > textarea {
-    width: 50%;
     max-width: 100%;
     min-width: 100%;
     display: block;
 }
 
 .makepost-thread {
-    margin-top: 0;
     background-color: #efe;
-    margin: 1em;
+    /* top right bottom left */
+    margin: 0 1em 1em 1em;
     padding: .5em;
 }
 
-.makepost-thread textarea {
-    width: 100%;
+.makepost-reply {
+    background-color: #efe;
+    margin: 1em 0 1em 1em;
+    padding: .5em;
 }
